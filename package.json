@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Ksyl0/gdziezakupywariacie-api#readme",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2"
   }
 }
