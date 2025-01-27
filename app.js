@@ -18,41 +18,41 @@ const handlowe = [
     "2025-12-21"
 ]
 
-function getNextSunday(date) {
-    const dayOfWeek = date.getDay();
-    const daysUntilSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
-    const nextSunday = new Date(date);
-    nextSunday.setDate(date.getDate() + daysUntilSunday);
-    nextSunday.setHours(0, 0, 0, 0);
-    return nextSunday;
+function whenHandlowa(dateArray) {
+// Strip time from the current date
+const currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+const currentTime = currentDate.getTime();
+
+const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000; // Milliseconds in a week
+
+let closestDate = null;
+let closestDiff = Infinity;
+
+for (const dateStr of dateArray) {
+  const targetDate = new Date(dateStr);
+  targetDate.setHours(0, 0, 0, 0); // Strip time from the target date
+  const targetTime = targetDate.getTime();
+
+  // Calculate the difference in milliseconds
+  const diff = targetTime - currentTime;
+
+  // Check if the date is within a week before or the same day
+  if (diff >= 0 && diff <= millisecondsInWeek) {
+    return dateStr;
+  }
+
+  // Find the closest date in the future
+  if (diff > 0 && diff < closestDiff) {
+    closestDiff = diff;
+    closestDate = dateStr;
+  }
 }
 
-function whenHandlowa(dates) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+// Return the closest date if found, otherwise false
+return closestDate || false;
+}  
 
-    const nextSunday = getNextSunday(today);
-
-    const dateMap = dates.map(dateStr => new Date(dateStr));
-
-    const todayMatch = dateMap.find(date => date.getTime() === today.getTime());
-    if (todayMatch) {
-        return true;
-    }
-
-    const nextSundayMatch = dateMap.find(date => date.getTime() === nextSunday.getTime());
-    if (nextSundayMatch) {
-        return `${nextSunday.toISOString().split('T')[0]}`;
-    }
-
-    const futureDates = dateMap.filter(date => date > today);
-    if (futureDates.length > 0) {
-        const closestDate = futureDates.sort((a, b) => a - b)[0];
-        return `${closestDate.toISOString().split('T')[0]}`;
-    }
-
-    return false;
-}
 
 app.get('/status', (req, res) => {
     const status = {
@@ -62,7 +62,8 @@ app.get('/status', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    const nextHandlowa = whenHandlowa(handlowe);
+    const today = new Date('2025-04-21');
+    const nextHandlowa = whenHandlowa(handlowe, today);
     let response;
     if(nextHandlowa == true) {
         response = {
