@@ -19,37 +19,32 @@ const handlowe = [
 ]
 
 function whenHandlowa(dateArray) {
-// Strip time from the current date
 const currentDate = new Date();
-currentDate.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+currentDate.setHours(0, 0, 0, 0);
 const currentTime = currentDate.getTime();
 
-const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000; // Milliseconds in a week
+const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
 
 let closestDate = null;
 let closestDiff = Infinity;
 
 for (const dateStr of dateArray) {
   const targetDate = new Date(dateStr);
-  targetDate.setHours(0, 0, 0, 0); // Strip time from the target date
+  targetDate.setHours(0, 0, 0, 0);
   const targetTime = targetDate.getTime();
 
-  // Calculate the difference in milliseconds
   const diff = targetTime - currentTime;
 
-  // Check if the date is within a week before or the same day
   if (diff >= 0 && diff <= millisecondsInWeek) {
     return dateStr;
   }
 
-  // Find the closest date in the future
   if (diff > 0 && diff < closestDiff) {
     closestDiff = diff;
     closestDate = dateStr;
   }
 }
 
-// Return the closest date if found, otherwise false
 return closestDate || false;
 }  
 
