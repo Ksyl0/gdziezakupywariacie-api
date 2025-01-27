@@ -1,7 +1,10 @@
 const express = require('express');
-require('dotenv').config()
+require('dotenv').config();
+const morgan = require('morgan');
 const app = express();
-app.use(express.json())
+app.use(express.json());
+
+app.use(morgan('combined'));
 
 const PORT = process.env.PORT || 3000;
 
