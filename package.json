@@ -1,0 +1,22 @@
+{
+  "name": "gdziezakupywariacie-api",
+  "version": "1.0.0",
+  "description": "Api które powie ci czy dzisiaj zrobisz zakupy w markecie czy musisz lecieć do płaza.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ksyl0/gdziezakupywariacie-api.git"
+  },
+  "author": "Ksyl0",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Ksyl0/gdziezakupywariacie-api/issues"
+  },
+  "homepage": "https://github.com/Ksyl0/gdziezakupywariacie-api#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
