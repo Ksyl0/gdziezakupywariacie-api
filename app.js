@@ -57,7 +57,7 @@ return closestDate || false;
 
 app.get('/status', (req, res) => {
     const status = {
-        "Status": "Running"
+        "is_running": true
     };
     res.send(status);
 });
