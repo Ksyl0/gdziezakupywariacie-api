@@ -1,12 +1,13 @@
 const express = require('express');
 require('dotenv').config();
 const morgan = require('morgan');
+const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.set('trust proxy', true);
 app.use(morgan('combined'));
 app.use(morgan(':remote-addr - :method :url :status :response-time ms'));
-
+app.use(cors())
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
