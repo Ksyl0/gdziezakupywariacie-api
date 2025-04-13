@@ -44,7 +44,7 @@ function whenHandlowa(dateArray, customDate = null) {
     if (diff >= 0 && diff <= millisecondsInWeek || 
         (diff === 0) || 
         (diff < 0 && Math.abs(diff) <= millisecondsInWeek)) {
-      return true;
+      return dateStr;
     }
 
     if (diff > 0 && diff < closestDiff) {
