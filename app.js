@@ -24,34 +24,36 @@ const handlowe = [
     "2025-12-21"
 ]
 
-function whenHandlowa(dateArray) {
-const currentDate = new Date();
-currentDate.setHours(0, 0, 0, 0);
-const currentTime = currentDate.getTime();
+function whenHandlowa(dateArray, customDate = null) {
+  const currentDate = customDate ? new Date(customDate) : new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  const currentTime = currentDate.getTime();
 
-const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
+  const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
 
-let closestDate = null;
-let closestDiff = Infinity;
+  let closestDate = null;
+  let closestDiff = Infinity;
 
-for (const dateStr of dateArray) {
-  const targetDate = new Date(dateStr);
-  targetDate.setHours(0, 0, 0, 0);
-  const targetTime = targetDate.getTime();
+  for (const dateStr of dateArray) {
+    const targetDate = new Date(dateStr);
+    targetDate.setHours(0, 0, 0, 0);
+    const targetTime = targetDate.getTime();
 
-  const diff = targetTime - currentTime;
+    const diff = targetTime - currentTime;
+    
+    if (diff >= 0 && diff <= millisecondsInWeek || 
+        (diff === 0) || 
+        (diff < 0 && Math.abs(diff) <= millisecondsInWeek)) {
+      return true;
+    }
 
-  if (diff >= 0 && diff <= millisecondsInWeek) {
-    return dateStr;
+    if (diff > 0 && diff < closestDiff) {
+      closestDiff = diff;
+      closestDate = dateStr;
+    }
   }
 
-  if (diff > 0 && diff < closestDiff) {
-    closestDiff = diff;
-    closestDate = dateStr;
-  }
-}
-
-return closestDate || false;
+  return closestDate || false;
 }  
 
 
@@ -63,17 +65,17 @@ app.get('/status', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    const today = new Date('2025-04-21');
+    const today = new Date();
     const nextHandlowa = whenHandlowa(handlowe, today);
     let response;
-    if(nextHandlowa == true) {
+    if(nextHandlowa === true) {
         response = {
             "czy_handlowa": true,
             "odp": "Wariacie dzisiaj zakupki zrobisz w biedrze",
             "next_handlowa": nextHandlowa
         }
     }
-    else if(nextHandlowa == false) {
+    else if(nextHandlowa === false) {
         response = {
             "czy_handlowa": false,
             "odp": "Wariacie musisz lecieć do płaza",
