@@ -24,12 +24,24 @@ const handlowe = [
     "2025-12-21"
 ]
 
+function getISOWeek(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return { year: d.getFullYear(), week: weekNo };
+}
+
+function isSameWeek(date1, date2) {
+  const week1 = getISOWeek(date1);
+  const week2 = getISOWeek(date2);
+  return week1.year === week2.year && week1.week === week2.week;
+}
+
 function whenHandlowa(dateArray, customDate = null) {
   const currentDate = customDate ? new Date(customDate) : new Date();
   currentDate.setHours(0, 0, 0, 0);
-  const currentTime = currentDate.getTime();
-
-  const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
 
   let closestDate = null;
   let closestDiff = Infinity;
@@ -37,16 +49,12 @@ function whenHandlowa(dateArray, customDate = null) {
   for (const dateStr of dateArray) {
     const targetDate = new Date(dateStr);
     targetDate.setHours(0, 0, 0, 0);
-    const targetTime = targetDate.getTime();
 
-    const diff = targetTime - currentTime;
-    
-    if (diff >= 0 && diff <= millisecondsInWeek || 
-        (diff === 0) || 
-        (diff < 0 && Math.abs(diff) <= millisecondsInWeek)) {
+    if (isSameWeek(currentDate, targetDate)) {
       return dateStr;
     }
 
+    const diff = targetDate.getTime() - currentDate.getTime();
     if (diff > 0 && diff < closestDiff) {
       closestDiff = diff;
       closestDate = dateStr;
@@ -54,7 +62,7 @@ function whenHandlowa(dateArray, customDate = null) {
   }
 
   return closestDate || false;
-}  
+}
 
 
 app.get('/status', (req, res) => {
@@ -68,7 +76,8 @@ app.get('/', (req, res) => {
     const today = new Date();
     const nextHandlowa = whenHandlowa(handlowe, today);
     let response;
-    if(nextHandlowa === true) {
+    
+    if(nextHandlowa && isSameWeek(today, new Date(nextHandlowa))) {
         response = {
             "czy_handlowa": true,
             "odp": "Wariacie dzisiaj zakupki zrobisz w biedrze",
